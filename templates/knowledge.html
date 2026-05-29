@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-3">
+    <div class="col-12">
+        <h4 class="mb-0"><i class="fas fa-sitemap text-success me-2"></i>知识点体系</h4>
+        <p class="text-muted">点击知识点查看所有关联题目</p>
+    </div>
+</div>
+
+<div id="kp-container">
+    {% for major, subs in subs_by_major.items()|sort %}
+    {% if major != "未分类" %}
+    <div class="card mb-3">
+        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+                <i class="fas fa-folder-open text-primary me-2"></i>{{ major }}
+            </h6>
+            <span class="badge bg-primary rounded-pill">{{ subs|length }}个知识点</span>
+        </div>
+        <div class="card-body py-2">
+            <div class="d-flex flex-wrap">
+                {% for sub in subs %}
+                <button class="sub-pill btn btn-outline-primary btn-sm" onclick="showSubQuestions('{{ sub }}')">
+                    {{ sub }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<!-- Subcategory questions modal -->
+<div class="modal fade" id="subModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subModalTitle">知识点题目</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="subModalBody">
+                <div class="text-center py-4 text-muted">
+                    <i class="fas fa-spinner fa-spin"></i> 加载中...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let subModal = null;
+document.addEventListener('DOMContentLoaded', () => {
+    subModal = new bootstrap.Modal(document.getElementById('subModal'));
+});
+
+function showSubQuestions(sub) {
+    document.getElementById('subModalTitle').textContent = sub;
+    document.getElementById('subModalBody').innerHTML = '<div class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+    subModal.show();
+
+    fetch(`/api/questions-by-sub?sub=${encodeURIComponent(sub)}`)
+        .then(r => r.json())
+        .then(qs => {
+            const body = document.getElementById('subModalBody');
+            body.innerHTML = '';
+
+            if (qs.length === 0) {
+                body.innerHTML = '<div class="text-center py-4 text-muted">暂无题目</div>';
+                return;
+            }
+
+            qs.forEach((q, i) => {
+                const div = renderQuestion(q, i, q.answer ? true : false);
+                body.appendChild(div);
+            });
+        });
+}
+</script>
+{% endblock %}

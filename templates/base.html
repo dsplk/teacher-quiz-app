@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深圳教师招聘 - 刷题系统</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-graduation-cap"></i> 深圳教师招聘刷题
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-chart-pie"></i> 首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/practice"><i class="fas fa-pencil-alt"></i> 刷题</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/wrong-book"><i class="fas fa-book"></i> 错题本</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/knowledge"><i class="fas fa-sitemap"></i> 知识点</a>
+                    </li>
+                </ul>
+                <span class="navbar-text" id="stats-badge">
+                    <small><i class="fas fa-database"></i> <span id="stat-questions">0</span>题</small>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer mt-5 py-3 bg-light">
+        <div class="container text-center text-muted">
+            <small>深圳教师招聘考试客观题真题分类整理 · 2013-2025年真题</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/app.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

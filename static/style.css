@@ -1,0 +1,205 @@
+/* 深圳教师招聘刷题系统 - 样式 */
+:root {
+    --primary: #4a6cf7;
+    --primary-dark: #3b5de7;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+}
+
+body {
+    background: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+}
+
+/* Category cards */
+.category-card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    overflow: hidden;
+}
+.category-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.category-card .card-body {
+    padding: 1.25rem;
+}
+.category-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+/* Progress bars */
+.progress-thin {
+    height: 6px;
+    border-radius: 3px;
+}
+
+/* Question card */
+.question-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.question-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+.option-item {
+    padding: 10px 14px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 8px;
+}
+.option-item:hover:not(.disabled) {
+    border-color: var(--primary);
+    background: #eef2ff;
+}
+.option-item.selected {
+    border-color: var(--primary);
+    background: #eef2ff;
+}
+.option-item.correct {
+    border-color: var(--success);
+    background: #ecfdf5;
+}
+.option-item.wrong {
+    border-color: var(--danger);
+    background: #fef2f2;
+}
+.option-item.disabled {
+    cursor: default;
+    opacity: 0.85;
+}
+.option-label {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    text-align: center;
+    line-height: 24px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+.option-item.selected .option-label {
+    background: var(--primary);
+    color: white;
+}
+.option-item.correct .option-label {
+    background: var(--success);
+    color: white;
+}
+.option-item.wrong .option-label {
+    background: var(--danger);
+    color: white;
+}
+
+/* Stats cards */
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.stat-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* Wrong book */
+.wrong-item {
+    border: none;
+    border-radius: 10px;
+    border-left: 4px solid var(--danger);
+}
+.wrong-item.reviewed {
+    border-left-color: var(--success);
+}
+
+/* Knowledge point card */
+.kp-card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.15s;
+}
+.kp-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Answer reveal animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.answer-reveal {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Subcategory pills */
+.sub-pill {
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    margin: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.sub-pill:hover {
+    transform: translateY(-1px);
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9ca3af;
+}
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* Responsive - mobile first */
+@media (max-width: 768px) {
+    .stat-number { font-size: 1.5rem; }
+    .category-card .card-body { padding: 1rem; }
+    .option-item { padding: 14px 12px; }
+    .option-label { width: 28px; height: 28px; line-height: 28px; font-size: 0.85rem; }
+    .question-card .card-body { padding: 1rem !important; }
+    .question-card .card-body > div:first-child { font-size: 0.75rem; }
+    .question-card .card-body > div:nth-child(2) { font-size: 1rem !important; }
+    .container { padding-left: 12px; padding-right: 12px; }
+    .badge { font-size: 0.7rem; }
+    .sub-pill { padding: 8px 14px; font-size: 0.8rem; margin: 2px; }
+    .answer-reveal { font-size: 0.9rem; }
+    .navbar-brand { font-size: 1rem; }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+    .option-item { padding: 12px 10px; }
+    .question-meta .badge { font-size: 0.65rem; }
+    .stat-card { padding: 0.75rem; }
+    .stat-number { font-size: 1.2rem; }
+}

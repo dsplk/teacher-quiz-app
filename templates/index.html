@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="alert alert-info py-2 mb-0 text-center" style="font-size:0.9rem;">
+            <i class="fas fa-wifi me-1"></i> 手机刷题：同一WiFi下访问
+            <strong id="phone-url">http://192.168.x.x:5050</strong>
+            <button class="btn btn-sm btn-outline-info ms-2" onclick="copyPhoneUrl()"><i class="fas fa-copy"></i></button>
+        </div>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="p-4 bg-white rounded-3 shadow-sm">
+            <h4 class="mb-1"><i class="fas fa-chart-pie text-primary me-2"></i>学习统计</h4>
+            <p class="text-muted mb-3">深圳教师招聘考试客观题真题（2013-2025年）· 共 {{ total }} 题</p>
+            <div class="row g-3" id="stats-row">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card bg-light text-center">
+                        <div class="stat-number text-primary">{{ total }}</div>
+                        <div class="stat-label">总题数</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card bg-light text-center">
+                        <div class="stat-number text-success" id="answered-count">0</div>
+                        <div class="stat-label">有答案</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card bg-light text-center">
+                        <div class="stat-number text-danger" id="wrong-count">0</div>
+                        <div class="stat-label">错题数</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card bg-light text-center">
+                        <div class="stat-number text-warning" id="unreviewed-count">0</div>
+                        <div class="stat-label">待复习</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    {% for cat, info in categories.items()|sort %}
+    {% if cat != "未分类" %}
+    <div class="col-md-6 col-lg-4">
+        <div class="category-card card" onclick="location.href='/practice?cat={{ cat | urlencode }}'">
+            <div class="card-body">
+                <div class="d-flex align-items-start mb-2">
+                    <div class="category-icon bg-primary bg-opacity-10 text-primary me-3">
+                        <i class="fas fa-{% if cat == '教育学' %}book-open{% elif cat == '心理学' %}brain{% elif cat == '教育心理学' %}lightbulb{% elif cat == '教学技能' %}chalkboard-teacher{% elif cat == '教育法律法规' %}gavel{% elif cat == '教师职业素养' %}user-tie{% else %}star{% endif %}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">{{ cat }}</h5>
+                        <small class="text-muted">{{ info.subs|length }}个知识点 · {{ info.total }}题</small>
+                    </div>
+                    <i class="fas fa-chevron-right text-muted"></i>
+                </div>
+                <div class="progress progress-thin mt-2">
+                    <div class="progress-bar bg-success" role="progressbar"
+                         style="width: {{ (info.answered / info.total * 100) if info.total > 0 else 0 }}%"></div>
+                </div>
+                <small class="text-muted">{{ info.answered }}/{{ info.total }}题有答案</small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="bg-white rounded-3 shadow-sm p-3">
+            <h5 class="mb-3"><i class="fas fa-fire text-warning me-2"></i>快速开始</h5>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/practice" class="btn btn-primary">
+                    <i class="fas fa-random me-1"></i>随机练习
+                </a>
+                <a href="/wrong-book" class="btn btn-danger">
+                    <i class="fas fa-book me-1"></i>错题复习
+                </a>
+                <a href="/knowledge" class="btn btn-success">
+                    <i class="fas fa-sitemap me-1"></i>浏览知识点
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    api('/api/stats').then(s => {
+        document.getElementById('answered-count').textContent = s.answered;
+        document.getElementById('wrong-count').textContent = s.wrong_total;
+        document.getElementById('unreviewed-count').textContent = s.wrong_unreviewed;
+    });
+    // Detect and show phone URL
+    const urlEl = document.getElementById('phone-url');
+    if (urlEl) {
+        const host = window.location.hostname;
+        if (host !== 'localhost' && host !== '127.0.0.1') {
+            urlEl.textContent = window.location.href;
+        } else {
+            // Try to detect local IP
+            const pc = new RTCPeerConnection({iceServers:[]});
+            pc.createDataChannel('');
+            pc.onicecandidate = e => {
+                if (e.candidate) {
+                    const ip = e.candidate.candidate.match(/(\d+\.\d+\.\d+\.\d+)/);
+                    if (ip && ip[1] && !ip[1].startsWith('127.')) {
+                        urlEl.textContent = `http://${ip[1]}:5050`;
+                    }
+                }
+            };
+            pc.createOffer().then(d => pc.setLocalDescription(d)).catch(()=>{});
+            setTimeout(() => pc.close(), 2000);
+        }
+    }
+});
+function copyPhoneUrl() {
+    const text = document.getElementById('phone-url').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('已复制：' + text);
+    });
+}
+</script>
+{% endblock %}
